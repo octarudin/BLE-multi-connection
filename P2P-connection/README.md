@@ -78,7 +78,10 @@ BLE. Semua board dapat diberi daya melalui USB masing-masing.
 Untuk tahap IR, GPIO4 hanya memberi sinyal kendali. LED IR harus memakai
 transistor driver dan resistor pembatas arus. Nilai komponen pada diagram adalah
 contoh awal, bukan pengganti perhitungan sesuai tipe LED, transistor, dan arus
-yang diinginkan.
+yang diinginkan. Pada konfigurasi NPN *low-side*, jalur bebannya adalah
+`+5 V → resistor pembatas → anoda LED IR → katoda LED IR → collector NPN`,
+sedangkan emitter, resistor pull-down basis, dan GND slave terhubung ke satu
+ground bersama.
 
 ## Sistem kerja
 

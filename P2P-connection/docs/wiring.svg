@@ -62,42 +62,54 @@
   <rect class="panel" x="40" y="480" width="1320" height="370" rx="20"/>
   <text class="heading" x="70" y="520">B. Driver LED IR opsional pada setiap slave</text>
 
-  <rect class="board" x="80" y="580" width="245" height="160" rx="16"/>
-  <text class="label" x="202" y="630" text-anchor="middle">ESP32 SLAVE</text>
-  <text class="small" x="202" y="668" text-anchor="middle" fill="#d7e4ff">GPIO4 = IR_TX</text>
-  <text class="small" x="202" y="700" text-anchor="middle" fill="#d7e4ff">GND bersama</text>
+  <rect class="board" x="80" y="575" width="245" height="165" rx="16"/>
+  <text class="label" x="202" y="625" text-anchor="middle">ESP32 SLAVE</text>
+  <text class="small" x="202" y="663" text-anchor="middle" fill="#d7e4ff">GPIO4 = IR_TX</text>
+  <text class="small" x="202" y="698" text-anchor="middle" fill="#d7e4ff">GND bersama</text>
 
-  <path class="signal" d="M325 645 H440" marker-end="url(#arrowGreen)"/>
-  <rect class="driver" x="440" y="610" width="130" height="70" rx="10"/>
-  <text class="text" x="505" y="640" text-anchor="middle">1 kΩ</text>
-  <text class="small" x="505" y="665" text-anchor="middle">resistor basis</text>
+  <!-- Base drive: GPIO4 -> 1 kΩ -> base NPN. -->
+  <path class="signal" d="M325 650 H420" marker-end="url(#arrowGreen)"/>
+  <rect class="driver" x="420" y="615" width="130" height="70" rx="10"/>
+  <text class="text" x="485" y="645" text-anchor="middle">1 kΩ</text>
+  <text class="small" x="485" y="670" text-anchor="middle">resistor basis</text>
+  <path class="signal" d="M550 650 H650"/>
+  <circle cx="600" cy="650" r="7" fill="#1f9d62"/>
 
-  <path class="signal" d="M570 645 H665"/>
-  <circle cx="700" cy="645" r="35" fill="#fff4d6" stroke="#d48b00" stroke-width="3"/>
-  <text class="text" x="700" y="640" text-anchor="middle">NPN</text>
-  <text class="small" x="700" y="665" text-anchor="middle">B / C / E</text>
+  <!-- NPN low-side switch with explicit B/C/E pins. -->
+  <rect class="driver" x="650" y="580" width="170" height="135" rx="14"/>
+  <text class="text" x="735" y="620" text-anchor="middle">NPN low-side</text>
+  <text class="small" x="663" y="657">B</text>
+  <text class="small" x="795" y="610">C</text>
+  <text class="small" x="742" y="703">E</text>
 
-  <circle cx="620" cy="645" r="7" fill="#1f9d62"/>
-  <path class="ground" d="M620 652 V700"/>
-  <rect class="driver" x="575" y="700" width="90" height="42" rx="8"/>
-  <text class="small" x="620" y="727" text-anchor="middle">10 kΩ</text>
-  <path class="ground" d="M620 742 V760"/>
+  <!-- Pull-down base to the same ground bus. -->
+  <path class="ground" d="M600 657 V690"/>
+  <rect class="driver" x="560" y="690" width="80" height="45" rx="8"/>
+  <text class="small" x="600" y="719" text-anchor="middle">10 kΩ</text>
+  <path class="ground" d="M600 735 V785"/>
 
-  <path class="signal" d="M735 645 H850"/>
-  <rect class="driver" x="850" y="610" width="160" height="70" rx="10"/>
-  <text class="text" x="930" y="640" text-anchor="middle">LED IR</text>
-  <text class="small" x="930" y="665" text-anchor="middle">katoda ke kolektor</text>
+  <!-- Load path: +5 V -> current limiter -> IR LED anode/cathode -> collector. -->
+  <text class="small" x="1060" y="565" text-anchor="middle">jalur beban: +5 V → R → LED IR → collector</text>
+  <text class="text" x="1310" y="615" text-anchor="middle" fill="#db3a34">+5 V</text>
+  <path class="power" d="M1280 625 H1230"/>
+  <rect class="driver" x="1060" y="590" width="170" height="70" rx="10"/>
+  <text class="text" x="1145" y="620" text-anchor="middle">68-220 Ω</text>
+  <text class="small" x="1145" y="645" text-anchor="middle">pembatas arus</text>
+  <path class="power" d="M1060 625 H1010"/>
+  <rect class="driver" x="850" y="590" width="160" height="70" rx="10"/>
+  <text class="text" x="930" y="620" text-anchor="middle">LED IR</text>
+  <text class="small" x="930" y="645" text-anchor="middle">katoda K (kiri) · anoda A (kanan)</text>
+  <path class="power" d="M850 625 H820"/>
 
-  <path class="power" d="M1010 645 H1090"/>
-  <rect class="driver" x="1090" y="610" width="155" height="70" rx="10"/>
-  <text class="text" x="1167" y="640" text-anchor="middle">68-220 Ω</text>
-  <text class="small" x="1167" y="665" text-anchor="middle">pembatas arus</text>
-  <path class="power" d="M1245 645 H1310 V560"/>
-  <text class="text" x="1310" y="550" text-anchor="middle" fill="#db3a34">+5 V</text>
-
-  <path class="ground" d="M700 680 V760 H202 V740"/>
-  <path class="ground" d="M160 780 H245 M175 795 H230 M190 810 H215"/>
-  <text class="text" x="310" y="790">GND slave dan driver harus tersambung</text>
-  <text class="small" x="930" y="735" text-anchor="middle">Jangan hubungkan LED IR langsung ke GPIO4</text>
-  <text class="small" x="930" y="765" text-anchor="middle">Nilai resistor disesuaikan dengan LED, transistor, dan arus target</text>
+  <!-- One continuous ground bus: slave GND, emitter, and base pull-down. -->
+  <path class="ground" d="M202 740 V785 H780"/>
+  <path class="ground" d="M735 715 V785"/>
+  <circle cx="202" cy="785" r="7" fill="#202c3c"/>
+  <circle cx="600" cy="785" r="7" fill="#202c3c"/>
+  <circle cx="735" cy="785" r="7" fill="#202c3c"/>
+  <path class="ground" d="M760 785 V800 M720 800 H800 M735 815 H785 M750 830 H770"/>
+  <text class="small" x="250" y="825">GND slave = GND emitter = GND pull-down</text>
+  <text class="small" x="1010" y="715" text-anchor="middle">+5 V tidak langsung ke collector</text>
+  <text class="small" x="1010" y="745" text-anchor="middle">Jangan hubungkan LED IR langsung ke GPIO4</text>
+  <text class="small" x="1010" y="775" text-anchor="middle">Nilai resistor disesuaikan dengan LED, transistor, dan arus target</text>
 </svg>
