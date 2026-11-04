@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Smart IR Master</title>
+  <style>
+    :root{font-family:system-ui,sans-serif;color:#172033;background:#eef2f6}body{max-width:1050px;margin:auto;padding:20px}
+    h1{margin-bottom:4px}.muted{color:#667085}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+    section,.card{background:white;border-radius:12px;padding:16px;margin:16px 0;box-shadow:0 2px 12px #17203312}
+    label{display:block;font-size:13px;margin-top:9px;color:#475467}input,select,button{box-sizing:border-box;width:100%;padding:9px;border:1px solid #ccd3dd;border-radius:7px}
+    button{background:#155eef;color:white;border:0;margin-top:10px;cursor:pointer}.danger{background:#c01048}.secondary{background:#475467}.row{display:flex;gap:8px}.row>*{flex:1}
+    .pill{display:inline-block;padding:3px 8px;border-radius:20px;background:#edf2ff;font-size:12px}.warning{background:#fff3cd;padding:10px;border-radius:8px}
+    pre{white-space:pre-wrap}table{width:100%;border-collapse:collapse}td,th{padding:7px;text-align:left;border-bottom:1px solid #eee;font-size:13px}
+  </style>
+</head>
+<body>
+  <h1>Smart IR Master</h1><div id="meta" class="muted">Memuat…</div>
+  <p class="warning">Environment dev · halaman ini belum menggunakan login. Gunakan hanya pada jaringan tepercaya.</p>
+  <div class="grid">
+    <section><h2>Wi-Fi STA</h2><div id="net"></div>
+      <label>SSID</label><input id="ssid" maxlength="32">
+      <label>Password</label><input id="password" type="password" maxlength="64" placeholder="Kosongkan untuk mempertahankan password">
+      <button onclick="saveWifi()">Save &amp; reconnect</button>
+    </section>
+    <section><h2>Provision slave</h2>
+      <label>Slave terdeteksi</label><select id="mac"></select>
+      <div class="row"><div><label>ID (0–255)</label><input id="newId" type="number" min="0" max="255" value="1"></div>
+      <div><label>Deep sleep (ms)</label><input id="sleep" type="number" min="1" max="1999" value="1000"></div></div>
+      <label>Safety awake timeout (ms)</label><input id="awake" type="number" min="2000" max="30000" value="10000">
+      <button onclick="provision()">Provision &amp; bond</button>
+    </section>
+  </div>
+  <section><h2>Registered slaves</h2><div id="slaves"></div></section>
+  <section><h2>Factory reset</h2><p class="muted">Menghapus konfigurasi aplikasi, Wi-Fi, bonding BLE, allowlist, antrean, dan sertifikat yang dikelola aplikasi.</p>
+    <button class="danger" onclick="factoryReset()">Factory reset</button></section>
+  <div id="message" class="muted"></div>
+<script>
+const $=id=>document.getElementById(id);let data={registered:[],discovered:[]};
+async function api(url,opt){const r=await fetch(url,{headers:{'Content-Type':'application/json'},...opt});const j=await r.json();if(!r.ok)throw Error(j.error||r.statusText);return j}
+function msg(x){$('message').textContent=x}
+async function refresh(){try{const [s,d]=await Promise.all([api('/api/system'),api('/api/slaves')]);data=d;
+ $('meta').textContent=`Firmware ${s.firmware_version} · ${s.environment} · protocol v${s.protocol_version}`;
+ $('net').innerHTML=`<span class="pill">STA ${s.wifi.connected?'connected':'offline'}</span> ${s.wifi.sta_ip||''}<br><span class="pill">AP ${s.wifi.ap_active?'active':'off'}</span> ${s.wifi.ap_ssid||''} ${s.wifi.ap_ip||''}`;$('ssid').value=s.wifi.ssid||'';
+ $('mac').innerHTML=d.discovered.map(x=>`<option value="${x.mac}">${x.mac} · RSSI ${x.rssi} · advertised ID ${x.advertised_id}</option>`).join('');renderSlaves()}catch(e){msg(e.message)}}
+function renderSlaves(){$('slaves').innerHTML=data.registered.length?data.registered.map(s=>`<div class="card"><b>Slave ${s.id}</b> <span class="pill">${s.connected?'connected':s.awake?'awake':'offline/sleep'}</span>
+ <div class="muted">${s.mac} · RSSI ${s.rssi} · pending ${s.pending} · battery ${s.battery_mv||'-'} mV</div>
+ <div class="row"><button onclick="act(${s.id},'start')">START</button><button class="secondary" onclick="act(${s.id},'stop')">STOP / standby</button><button class="secondary" onclick="act(${s.id},'status')">Status</button></div>
+ <div class="row"><div><label>Slave ID</label><input id="ci${s.id}" type="number" min="0" max="255" value="${s.id}"></div>
+ <div><label>Deep sleep (ms)</label><input id="cs${s.id}" type="number" min="1" max="1999" value="${s.sleep_ms}"></div>
+ <div><label>Awake timeout (ms)</label><input id="ca${s.id}" type="number" min="2000" max="30000" value="${s.awake_timeout_ms}"></div></div>
+ <button class="secondary" onclick="saveSlaveConfig(${s.id})">Queue slave configuration</button>
+ <div class="row"><div><label>Power</label><select id="p${s.id}"><option value="1" ${s.ac.power?'selected':''}>On</option><option value="0" ${!s.ac.power?'selected':''}>Off</option></select></div>
+ <div><label>Mode</label><select id="m${s.id}">${['Auto','Cool','Dry','Fan','Heat'].map((x,i)=>`<option value="${i}" ${s.ac.mode==i?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div><label>Temperature</label><input id="t${s.id}" type="number" min="16" max="30" value="${s.ac.temperature}"></div></div>
+ <div class="row"><div><label>Fan</label><select id="f${s.id}">${['Auto','1','2','3','4','5'].map((x,i)=>`<option value="${i}" ${s.ac.fan==i?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div><label>Swing</label><select id="w${s.id}">${['Off','Vertical','Horizontal','Both'].map((x,i)=>`<option value="${i}" ${s.ac.swing==i?'selected':''}>${x}</option>`).join('')}</select></div></div>
+ <button onclick="sendAc(${s.id})">Queue complete AC state</button><button class="danger" onclick="forgetSlave(${s.id})">Forget slave</button></div>`).join(''):'Belum ada slave terdaftar.'}
+async function saveWifi(){try{await api('/api/wifi',{method:'POST',body:JSON.stringify({ssid:$('ssid').value,password:$('password').value})});msg('Tersimpan. Koneksi sedang dipindahkan; halaman dapat terputus sementara.')}catch(e){msg(e.message)}}
+async function provision(){try{await api('/api/slaves/provision',{method:'POST',body:JSON.stringify({mac:$('mac').value,id:+$('newId').value,sleep_ms:+$('sleep').value,awake_timeout_ms:+$('awake').value})});msg('Slave masuk allowlist; provisioning dikirim saat advertising berikutnya.');refresh()}catch(e){msg(e.message)}}
+async function act(id,action){try{await api('/api/slaves/action',{method:'POST',body:JSON.stringify({id,action})});msg(`${action} queued`);refresh()}catch(e){msg(e.message)}}
+async function saveSlaveConfig(id){const payload={id,action:'config',new_id:+$('ci'+id).value,sleep_ms:+$('cs'+id).value,awake_timeout_ms:+$('ca'+id).value};try{await api('/api/slaves/action',{method:'POST',body:JSON.stringify(payload)});msg('Slave configuration queued');refresh()}catch(e){msg(e.message)}}
+async function sendAc(id){const ac={power:$('p'+id).value==='1',mode:+$('m'+id).value,temperature:+$('t'+id).value,fan:+$('f'+id).value,swing:+$('w'+id).value};try{await api('/api/slaves/action',{method:'POST',body:JSON.stringify({id,action:'ac',ac})});msg('AC state queued');refresh()}catch(e){msg(e.message)}}
+async function forgetSlave(id){if(confirm(`Hapus slave ${id} dari master?`))await act(id,'forget')}
+async function factoryReset(){if(confirm('Hapus SEMUA konfigurasi dan bonding lalu reboot?'))try{await api('/api/factory-reset',{method:'POST',body:'{"confirm":true}'});msg('Factory reset berjalan…')}catch(e){msg(e.message)}}
+refresh();setInterval(refresh,5000);
+</script></body></html>

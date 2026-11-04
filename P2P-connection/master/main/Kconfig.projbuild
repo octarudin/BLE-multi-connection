@@ -1,0 +1,39 @@
+menu "Smart IR master configuration"
+
+config SMART_IR_RGB_LED_GPIO
+    int "Addressable RGB LED GPIO"
+    range 0 48
+    default 48
+    help
+        ESP32-S3-DevKitC-1 initial revision and most clones use GPIO48.
+        Official DevKitC-1 v1.1 uses GPIO38.
+
+config SMART_IR_FACTORY_RESET_GPIO
+    int "Factory reset button GPIO"
+    range 0 48
+    default 2
+
+config SMART_IR_LOG_PROTOCOL_FRAMES
+    bool "Log BLE protocol frames"
+    default y
+
+config SMART_IR_DIAGNOSTIC_OPEN_AP
+    bool "DIAGNOSTIC: run provisioning AP without a password"
+    default n
+    help
+        Removes WPA2 only to isolate SoftAP authentication problems. Do not
+        enable in production because Wi-Fi credentials may be submitted over
+        an unencrypted local network.
+
+        The normal WPA2 AP uses channel 6 and an 802.11b/g/n HT20 profile.
+        This option only removes authentication and limits the AP to one
+        client.
+
+config SMART_IR_AP_PASSWORD
+    string "Provisioning SoftAP password"
+    default "change-me-1234"
+    help
+        WPA2 password for the provisioning SoftAP. Change this value through
+        menuconfig before deploying the firmware.
+
+endmenu
