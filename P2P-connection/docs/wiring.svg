@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Diagram wiring Smart IR BLE P2P</title>
+  <desc id="desc">Laptop terhubung melalui BLE ke master ESP32-S3, master terhubung melalui BLE ke dua slave ESP32, dan setiap slave dapat mengendalikan driver LED inframerah melalui GPIO4.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f4f7fb; }
+      .panel { fill: #ffffff; stroke: #c9d4e3; stroke-width: 2; }
+      .board { fill: #14213d; stroke: #0b132b; stroke-width: 3; }
+      .screen { fill: #e8f1ff; stroke: #2864dc; stroke-width: 3; }
+      .driver { fill: #fff4d6; stroke: #d48b00; stroke-width: 3; }
+      .title { font: 700 34px Arial, sans-serif; fill: #10213d; }
+      .heading { font: 700 24px Arial, sans-serif; fill: #10213d; }
+      .label { font: 700 20px Arial, sans-serif; fill: #ffffff; }
+      .text { font: 18px Arial, sans-serif; fill: #24344d; }
+      .small { font: 15px Arial, sans-serif; fill: #46566f; }
+      .wire { fill: none; stroke: #202c3c; stroke-width: 5; }
+      .ble { fill: none; stroke: #2864dc; stroke-width: 5; stroke-dasharray: 14 10; }
+      .power { fill: none; stroke: #db3a34; stroke-width: 5; }
+      .ground { fill: none; stroke: #202c3c; stroke-width: 5; }
+      .signal { fill: none; stroke: #1f9d62; stroke-width: 5; }
+    </style>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto-start-reverse">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#2864dc"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#1f9d62"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1400" height="900"/>
+  <text class="title" x="700" y="52" text-anchor="middle">Wiring dan Koneksi Smart IR BLE P2P</text>
+
+  <rect class="panel" x="40" y="80" width="1320" height="370" rx="20"/>
+  <text class="heading" x="70" y="120">A. Koneksi sistem (tanpa kabel data antarnode)</text>
+
+  <rect class="screen" x="90" y="175" width="270" height="155" rx="16"/>
+  <rect x="125" y="205" width="200" height="90" rx="6" fill="#ffffff" stroke="#88a9de" stroke-width="2"/>
+  <text class="text" x="225" y="242" text-anchor="middle">Chrome / Edge</text>
+  <text class="small" x="225" y="272" text-anchor="middle">localhost + Web Bluetooth</text>
+  <path d="M70 350 H380 L340 330 H110 Z" fill="#8095b2"/>
+  <text class="heading" x="225" y="405" text-anchor="middle">Laptop</text>
+
+  <rect class="board" x="555" y="155" width="290" height="200" rx="18"/>
+  <text class="label" x="700" y="213" text-anchor="middle">MASTER</text>
+  <text class="label" x="700" y="247" text-anchor="middle">ESP32-S3 N16R8</text>
+  <text class="small" x="700" y="287" text-anchor="middle" fill="#d7e4ff">USB: daya / flash / monitor</text>
+  <text class="small" x="700" y="317" text-anchor="middle" fill="#d7e4ff">RGB: GPIO48 (atau GPIO38)</text>
+
+  <rect class="board" x="1050" y="120" width="250" height="130" rx="16"/>
+  <text class="label" x="1175" y="172" text-anchor="middle">SLAVE 1</text>
+  <text class="small" x="1175" y="207" text-anchor="middle" fill="#d7e4ff">ESP32 · USB power</text>
+  <rect class="board" x="1050" y="285" width="250" height="130" rx="16"/>
+  <text class="label" x="1175" y="337" text-anchor="middle">SLAVE 2</text>
+  <text class="small" x="1175" y="372" text-anchor="middle" fill="#d7e4ff">ESP32 · USB power</text>
+
+  <path class="ble" d="M365 250 H545" marker-start="url(#arrowBlue)" marker-end="url(#arrowBlue)"/>
+  <text class="text" x="455" y="232" text-anchor="middle">BLE</text>
+  <path class="ble" d="M855 220 C930 220 965 185 1040 185" marker-start="url(#arrowBlue)" marker-end="url(#arrowBlue)"/>
+  <path class="ble" d="M855 290 C930 290 965 350 1040 350" marker-start="url(#arrowBlue)" marker-end="url(#arrowBlue)"/>
+  <text class="small" x="938" y="265" text-anchor="middle">BLE terenkripsi + bonding</text>
+
+  <rect class="panel" x="40" y="480" width="1320" height="370" rx="20"/>
+  <text class="heading" x="70" y="520">B. Driver LED IR opsional pada setiap slave</text>
+
+  <rect class="board" x="80" y="580" width="245" height="160" rx="16"/>
+  <text class="label" x="202" y="630" text-anchor="middle">ESP32 SLAVE</text>
+  <text class="small" x="202" y="668" text-anchor="middle" fill="#d7e4ff">GPIO4 = IR_TX</text>
+  <text class="small" x="202" y="700" text-anchor="middle" fill="#d7e4ff">GND bersama</text>
+
+  <path class="signal" d="M325 645 H440" marker-end="url(#arrowGreen)"/>
+  <rect class="driver" x="440" y="610" width="130" height="70" rx="10"/>
+  <text class="text" x="505" y="640" text-anchor="middle">1 kΩ</text>
+  <text class="small" x="505" y="665" text-anchor="middle">resistor basis</text>
+
+  <path class="signal" d="M570 645 H665"/>
+  <circle cx="700" cy="645" r="35" fill="#fff4d6" stroke="#d48b00" stroke-width="3"/>
+  <text class="text" x="700" y="640" text-anchor="middle">NPN</text>
+  <text class="small" x="700" y="665" text-anchor="middle">B / C / E</text>
+
+  <circle cx="620" cy="645" r="7" fill="#1f9d62"/>
+  <path class="ground" d="M620 652 V700"/>
+  <rect class="driver" x="575" y="700" width="90" height="42" rx="8"/>
+  <text class="small" x="620" y="727" text-anchor="middle">10 kΩ</text>
+  <path class="ground" d="M620 742 V760"/>
+
+  <path class="signal" d="M735 645 H850"/>
+  <rect class="driver" x="850" y="610" width="160" height="70" rx="10"/>
+  <text class="text" x="930" y="640" text-anchor="middle">LED IR</text>
+  <text class="small" x="930" y="665" text-anchor="middle">katoda ke kolektor</text>
+
+  <path class="power" d="M1010 645 H1090"/>
+  <rect class="driver" x="1090" y="610" width="155" height="70" rx="10"/>
+  <text class="text" x="1167" y="640" text-anchor="middle">68-220 Ω</text>
+  <text class="small" x="1167" y="665" text-anchor="middle">pembatas arus</text>
+  <path class="power" d="M1245 645 H1310 V560"/>
+  <text class="text" x="1310" y="550" text-anchor="middle" fill="#db3a34">+5 V</text>
+
+  <path class="ground" d="M700 680 V760 H202 V740"/>
+  <path class="ground" d="M160 780 H245 M175 795 H230 M190 810 H215"/>
+  <text class="text" x="310" y="790">GND slave dan driver harus tersambung</text>
+  <text class="small" x="930" y="735" text-anchor="middle">Jangan hubungkan LED IR langsung ke GPIO4</text>
+  <text class="small" x="930" y="765" text-anchor="middle">Nilai resistor disesuaikan dengan LED, transistor, dan arus target</text>
+</svg>
