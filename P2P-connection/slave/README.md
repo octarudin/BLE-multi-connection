@@ -21,6 +21,23 @@ ESP-IDF v5.5.4 dan target `esp32`.
 - Quiet window 250 ms setelah respons terakhir agar master dapat menguras
   antrean sebelum slave tidur.
 
+## Hasil pengujian terminal slave
+
+Pengujian menggunakan dua slave dengan ID 1 dan ID 2. Keduanya berhasil
+advertising, terhubung ke master, mengaktifkan notifikasi status, menerima
+command, dan kembali advertising setelah koneksi ditutup.
+
+<table>
+  <tr>
+    <td align="center"><strong>Slave ID 1</strong></td>
+    <td align="center"><strong>Slave ID 2</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/slave-1-terminal.png" alt="Hasil terminal slave ID 1" width="440"></td>
+    <td><img src="docs/slave-2-terminal.png" alt="Hasil terminal slave ID 2" width="440"></td>
+  </tr>
+</table>
+
 ## Batasan AC pada versi ini
 
 Driver IR menyiapkan GPIO output tetapi **belum memancarkan frame Daikin**.

@@ -55,6 +55,16 @@ cd tools\ble_web_config
 
 Kemudian gunakan Chrome/Edge pada `http://localhost:8000`.
 
+## Hasil pengujian terminal master
+
+Log berikut menunjukkan master membuka jendela konfigurasi BLE untuk laptop,
+memproses pekerjaan slave secara *demand-driven*, dan kembali advertising
+setelah sesi selesai.
+
+<p align="center">
+  <img src="docs/master-terminal.png" alt="Hasil terminal master ESP32-S3" width="700">
+</p>
+
 ## Build
 
 ```powershell

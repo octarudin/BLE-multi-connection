@@ -29,3 +29,12 @@ Provisioning memiliki dua tahap yang ditampilkan terpisah:
 Setelah menekan Provision atau Queue configuration, web boleh tetap terhubung.
 Status ACK, advertised ID, RSSI, bonding, dan waktu terakhir slave terlihat dapat
 dibaca langsung dengan me-refresh data pada sesi yang sama.
+
+## Hasil pengujian web app
+
+Tampilan berikut menunjukkan master terhubung melalui Web Bluetooth dan dua
+slave yang sudah terdaftar serta terprovisioning.
+
+<p align="center">
+  <img src="docs/web-app.png" alt="Hasil web app Smart IR BLE Config" width="900">
+</p>
