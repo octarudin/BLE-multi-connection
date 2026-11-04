@@ -12,7 +12,11 @@ Web app berjalan lokal di Chrome/Edge melalui Web Bluetooth. Transport ke slave
 bersifat *demand-driven*: master hanya memindai dan menghubungi slave ketika ada
 provisioning, permintaan status, atau command yang perlu dikirim.
 
-![Foto master ESP32-S3 N16R8 dan slave ESP32](docs/images/hardware-master-and-slaves.jpg)
+<p align="center">
+  <img src="docs/images/hardware-master-and-slaves.jpg"
+       alt="Foto master ESP32-S3 N16R8 dan slave ESP32"
+       width="600">
+</p>
 
 Foto di atas memperlihatkan satu board master ESP32-S3 N16R8 dan dua board
 slave ESP32 yang digunakan pada pengujian.
@@ -48,7 +52,9 @@ serta Chrome/Edge yang mendukung Web Bluetooth.
 
 ## Wiring
 
-![Diagram wiring dan koneksi BLE](docs/wiring.svg)
+<p align="center">
+  <img src="docs/wiring.svg" alt="Diagram wiring dan koneksi BLE" width="900">
+</p>
 
 Tidak ada kabel data antara master dan slave; koneksi antarnode menggunakan
 BLE. Semua board dapat diberi daya melalui USB masing-masing.
