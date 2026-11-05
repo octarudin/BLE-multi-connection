@@ -1,0 +1,12 @@
+menu "Smart IR BLE Mesh slave"
+
+config SMART_IR_IR_TX_GPIO
+    int "IR LED transmit GPIO"
+    range 0 39
+    default 5
+    help
+        GPIO connected to the IR LED transistor driver. The sample validates
+        AC commands but deliberately does not emit a Daikin frame until the
+        exact Daikin protocol family is selected.
+
+endmenu
